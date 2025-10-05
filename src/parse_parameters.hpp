@@ -14,7 +14,7 @@ class Config{
         bool onlyCount = false;
         bool onlyWritePaths = false;
         bool logErrors = true;
-        int lineNumber = 0;
+        bool showLineNumbers = false;
         int linesAfter = 0;
         int linesBefore = 0;
         int concurentThreads = 1;
@@ -27,7 +27,7 @@ class Config{
         bool getOnlyCount() const;
         bool getOnlyWritePaths() const;
         bool getLogErrors() const;
-        int getLineNumber() const;
+        bool getShowLineNumbers() const;
         int getLinesAfter() const;
         int getLinesBefore() const;
         int getConcurentThreads() const;
@@ -37,7 +37,7 @@ class Config{
         void setOnlyCount(bool);
         void setOnlyWritePaths(bool);
         void setLogErrors(bool);
-        void setLineNumber(int);
+        void setShowLineNumbers(bool);
         void setLinesAfter(int);
         void setLinesBefore(int);
         void setConcurentThreads(int);

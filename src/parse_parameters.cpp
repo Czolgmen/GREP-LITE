@@ -24,12 +24,8 @@ bool Config::getLogErrors() const {
     return this->logErrors;
 }
 
-int Config::getLineNumber() const {
-    return this->lineNumber;
-}
-
-int Config::getLinesAfter() const {
-    return this->linesAfter;
+bool Config::getShowLineNumbers() const {
+    return this->showLineNumbers;
 }
 
 int Config::getLinesBefore() const {
@@ -64,8 +60,8 @@ void Config::setLogErrors(bool val) {
     this->logErrors=val;
 }
 
-void Config::setLineNumber(int val){
-    this->lineNumber=val;
+void Config::setShowLineNumbers(bool val){
+    this->showLineNumbers=val;
 }
 
 void Config::setLinesBefore(int val){
@@ -77,7 +73,7 @@ void Config::setLinesAfter(int val){
 }
 
 void Config::setConcurentThreads(int val){
-    this->setConcurentThreads(val);
+    this->concurentThreads=val;
 }
 
 Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vector<std::string> &paths){
@@ -95,20 +91,15 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
         {
             config.setIgnoreCase(true);
         } else if (arg == "-n") {
-            if (i+1 >= argc) {
-                throw std::invalid_argument("Line number not specified");
-            }
-            try {
-            config.setLineNumber(std::atoi(argv[++i]));
-            } catch (const std::exception&) {
-                throw std::invalid_argument("Invalid number for -n");
-            }
+            config.setShowLineNumbers(true);
         } else if (arg == "-A") {
             if (i+1 >= argc) {
                 throw std::invalid_argument("Line number not specified");
             }
             try {
-                config.setLinesAfter(std::atoi(argv[++i]));
+                int a = std::stoi(argv[++i]);
+                if (a<0) throw std::invalid_argument("Invalid number for -A");
+                config.setLinesAfter(a);
             } catch (const std::exception&) {
                 throw std::invalid_argument("Invalid number for -A");
             }
@@ -117,7 +108,9 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
                 throw std::invalid_argument("Line number not specified");
             }
             try {
-                config.setLinesBefore(std::atoi(argv[++i]));
+                int b = std::stoi(argv[++i]);
+                if (b<0) throw std::invalid_argument("Invalid number for -B");
+                config.setLinesBefore(b);
             } catch (const std::exception&){
                 throw std::invalid_argument("Invalid number for -B");
             }
@@ -126,7 +119,8 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
                 throw std::invalid_argument("Line number not specified");
             }
             try {
-                int c = std::atoi(argv[++i]);
+                int c = std::stoi(argv[++i]);
+                if (c<0) throw std::invalid_argument("Invalid number for -C");
                 config.setLinesAfter(c);
                 config.setLinesBefore(c);
             } catch (const std::exception&) {
@@ -141,7 +135,7 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
                 throw std::invalid_argument("Number of jobs not specified");
             }
             try{
-                int j = std::atoi(argv[++i]);
+                int j = std::stoi(argv[++i]);
                 if (j <= 0) throw std::invalid_argument("Invalid number of jobs");
                 config.setConcurentThreads(j);
             } catch (const std::exception&) {
@@ -156,6 +150,9 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
                 paths.push_back(arg);
             }
         }
+    }
+    if (pattern.empty()){
+        throw std::invalid_argument("Pattern is required");
     }
     return config;
 }
