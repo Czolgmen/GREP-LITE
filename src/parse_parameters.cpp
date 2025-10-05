@@ -28,6 +28,10 @@ bool Config::getShowLineNumbers() const {
     return this->showLineNumbers;
 }
 
+int Config::getLinesAfter() const {
+    return this->linesAfter;
+}
+
 int Config::getLinesBefore() const {
     return this->linesBefore;
 }
@@ -92,6 +96,8 @@ Config parse_parameters(int argc, char *argv[], std::string &pattern, std::vecto
             config.setIgnoreCase(true);
         } else if (arg == "-n") {
             config.setShowLineNumbers(true);
+        } else if (arg == "-r") {
+            config.setRecursive(true);
         } else if (arg == "-A") {
             if (i+1 >= argc) {
                 throw std::invalid_argument("Line number not specified");
